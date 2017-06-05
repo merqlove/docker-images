@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  psql_data:
+    image: busybox
+    volumes:
+      - /var/lib/postgresql/data
+  psql:
+    build: .
+    ports:
+      - "5439:5432"
+    volumes_from:
+      - psql_data
+    environment:
+      - POSTGRES_PASSWORD=example
+    
