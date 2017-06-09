@@ -21,6 +21,8 @@ docker run -d \
 - MOUNT_OPTS : hard
 - RETRANS : 2
 - VERSION : 4
+- LOG : null
+  AFTER: "/bin/true"
 
 and then to use it inside a container
 ```

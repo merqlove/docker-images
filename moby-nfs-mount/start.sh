@@ -45,7 +45,7 @@ if [ -z "$MOUNTPOINT" ]; then
 fi
 
 if [ -z "$AFTER" ]; then
-    AFTER='echo ""'
+    AFTER='/bin/true'
 fi
 
 BASE_CMD = "mkdir -p $MOUNTPOINT && \
