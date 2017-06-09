@@ -44,13 +44,15 @@ if [ -z "$MOUNTPOINT" ]; then
     exit 1
 fi
 
-if [ -z "$AFTER" ]; then
-    AFTER='/bin/true'
+if [ -n "$AFTER" ]; then
+    AFTER='eval "$AFTER"'
+else
+    AFTER="/bin/true"
 fi
 
 BASE_CMD = "mkdir -p $MOUNTPOINT && \
 mount -t nfs -o $FINAL_MOUNT_OPTS $SERVER $MOUNTPOINT && \
-eval $AFTER"
+$AFTER"
 
 if [ -n "$LOG" ]; then
   CMD = "apk add nfs-utils inotify-tools && \
