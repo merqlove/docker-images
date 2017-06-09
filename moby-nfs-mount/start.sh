@@ -44,16 +44,28 @@ if [ -z "$MOUNTPOINT" ]; then
     exit 1
 fi
 
+if [ -z "$AFTER" ]; then
+    AFTER='echo ""'
+fi
+
+BASE_CMD = "mkdir -p $MOUNTPOINT && \
+mount -t nfs -o $FINAL_MOUNT_OPTS $SERVER $MOUNTPOINT && \
+eval $AFTER"
+
+if [ -n "$LOG" ]; then
+  CMD = "apk add nfs-utils inotify-tools && \
+    $BASE_CMD && \
+    inotify -m $MOUNTPOINT"
+else
+  CMD = "apk add nfs-utils && \
+    $BASE_CMD && \
+    /bin/true"
+fi
+
 # use nsenter to enter the docker host so we can mount the amazon EFS share in the host and all containers will have access to the mounted folder
 # install required packages and mount the NFS share using env vars $SERVER and  $MOUNT
 # create the $MOUNT dir if it doesn't exist
 # and finally run inotifywait which will output all file folder and file operations so we have some basic logging
 # apk add cachefilesd --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted && \
 # if test "$CACHE" = "1"; then /usr/bin/cachefilesd -f /etc/cachefilesd.conf -s; fi && \
-nsenter -t 1 -m -u -i -n sh -c " \
-    apk update && \
-    apk add nfs-utils inotify-tools && \    
-    mkdir -p $MOUNTPOINT && \
-    mount -t nfs -o $FINAL_MOUNT_OPTS $SERVER $MOUNTPOINT && \
-    inotifywait -m $MOUNTPOINT \
-    "
+nsenter -t 1 -m -u -i -n sh -c "apk update && $CMD"
