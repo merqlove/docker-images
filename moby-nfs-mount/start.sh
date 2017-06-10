@@ -50,7 +50,7 @@ else
     AFTER="/bin/true"
 fi
 
-BASE_CMD = "mkdir -p $MOUNTPOINT && \
+BASE_CMD="mkdir -p $MOUNTPOINT && \
 mount -t nfs -o $FINAL_MOUNT_OPTS $SERVER $MOUNTPOINT && \
 $AFTER"
 
